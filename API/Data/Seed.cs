@@ -21,9 +21,7 @@ namespace API.Data
                 Console.WriteLine("No members found in the seed data.");
                 return;
             }
-
-            
-
+          
             foreach (var member in members)
             {
                 using var hmac = new HMACSHA512();
@@ -48,8 +46,6 @@ namespace API.Data
                         Gender = member.Gender,
                         Created = member.Created,
                         LastActive = member.LastActive,
-
-
                     }
                 };
 

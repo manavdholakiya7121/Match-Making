@@ -7,7 +7,7 @@ export class AgePipe implements PipeTransform {
 
   transform(value: string): number {
     const today = new Date();
-    const dob = new Date();
+    const dob = new Date(value);
 
     let age = today.getFullYear() - dob.getFullYear();
     const month = today.getMonth() - dob.getMonth();
