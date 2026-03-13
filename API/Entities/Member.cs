@@ -22,7 +22,7 @@ namespace API.Entities
 
         public required string Gender { get; set; }
 
-        public required string? Description { get; set; }
+        public string? Description { get; set; }
 
         public required string City { get; set; }
 
