@@ -25,7 +25,7 @@ export class Paginatior {
     if(pageSize) {
 
       const size = Number((pageSize as HTMLSelectElement).value)
-      this.pageNumber.set(size);
+      this.pageSize.set(size);
     } 
 
     this.pageChange.emit({

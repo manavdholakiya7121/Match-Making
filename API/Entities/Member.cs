@@ -8,8 +8,6 @@ namespace API.Entities
     {
         public string Id { get; set; } = null!;
 
-        public string Email { get; set; }
-
         public DateOnly DateOfBirth { get; set; }
 
         public string? ImageUrl { get; set; }
