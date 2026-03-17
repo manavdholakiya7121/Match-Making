@@ -8,6 +8,9 @@
                 <button (click)="resetFilters()" class="btn btn-neutral">
                     Reset Filters
                 </button>
+                <div class="text-lg bg-base-100 border py-2 px-4 rounded-lg text-primary capitalize">
+                    {{displayMessage}}
+                </div>
             </div>
             @if(paginatedResult.metadata; as metadata){
                 <app-paginatior 
