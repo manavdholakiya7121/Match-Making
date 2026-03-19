@@ -1,27 +1,34 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { signalGetFn } from '@angular/core/primitives/signals';
 import { Member } from '../../types/member';
+import { PaginatedResult } from '../../types/pagination';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LikesService {
-  private baseurl = environment.apiUrl;
+  private baseUrl = environment.apiUrl;
   private http = inject(HttpClient);
   likeIds = signal<string[]>([]);
 
   toggleLike(targetMemberId: string){
-    return this.http.post(`${this.baseurl}likes/${targetMemberId}`, {})
+    return this.http.post(`${this.baseUrl}likes/${targetMemberId}`, {})
   }
 
-  getLikes(predicate: string){
-    return this.http.get<Member[]>(this.baseurl + 'likes?predicate=' + predicate);
+  getLikes(predicate: string, pageNumber: number, pageSize: number) {
+    let params = new HttpParams();
+
+    params = params.append('pageNumber', pageNumber);
+    params = params.append('pageSize', pageSize);
+    params = params.append('predicate', predicate);
+
+    return this.http.get<PaginatedResult<Member>>(this.baseUrl + 'likes', {params});
   }
 
   getLikeIds(){
-    return this.http.get<string[]>(this.baseurl + 'likes/list').subscribe({
+    return this.http.get<string[]>(this.baseUrl + 'likes/list').subscribe({
       next: ids => this.likeIds.set(ids)
     })
   }

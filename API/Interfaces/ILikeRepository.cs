@@ -1,4 +1,5 @@
 ﻿using API.Entities;
+using API.Helpers;
 
 namespace API.Interfaces
 {
@@ -6,7 +7,7 @@ namespace API.Interfaces
     {
         Task<MemberLike?> GetMemberLike(string sourceMemberId, string targetMemberId);
 
-        Task<IReadOnlyList<Member>> GetMemberLikes(string predicate, string memberId);
+        Task<PaginatedResult<Member>> GetMemberLikes(LikesParams likesParams);
 
         Task<IReadOnlyList<string>> GetCurrentMemberLikesIds(string memberId);
 
