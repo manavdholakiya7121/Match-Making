@@ -34,8 +34,7 @@ namespace API.Controllers
                     Country = registerDto.Country,
                     Gender = registerDto.Gender,
                     DateOfBirth = registerDto.DateOfBirth
-                }
-                
+                }                
             };
 
             context.Users.Add(user);

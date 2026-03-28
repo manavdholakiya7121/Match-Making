@@ -17,14 +17,6 @@ namespace API.Data
             appDbContext.Likes.Remove(like);
         }
 
-        public async Task<IReadOnlyList<string>> GetCurrentMemberLikes(string memberId)
-        {
-            return await appDbContext.Likes
-                .Where(l => l.SourceMemberId == memberId)
-                .Select(l => l.TargetMemberId)
-                .ToListAsync();
-        }
-
         public async Task<IReadOnlyList<string>> GetCurrentMemberLikesIds(string memberId)
         {
             return await appDbContext.Likes

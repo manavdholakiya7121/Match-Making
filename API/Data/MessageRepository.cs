@@ -1,7 +1,9 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
@@ -22,14 +24,35 @@ namespace API.Data
            return await appDbContext.Messages.FindAsync(messageId);
         }
 
-        public Task<PaginatedResult<MessageDto>> GetMessagesForMember()
+        public async Task<PaginatedResult<MessageDto>> GetMessagesForMember(MessageParams messageParams)
         {
-            throw new NotImplementedException();
+            var query = appDbContext.Messages
+                .OrderByDescending(m => m.MessageSent)
+                .AsQueryable();
+
+            query = messageParams.Container switch
+            {
+                "Outbox" => query.Where(m => m.SenderId == messageParams.MemberId),
+                _ => query.Where(m => m.RecipientId == messageParams.MemberId)
+            };
+
+            var messageQuery = query.Select(MessageExtensions.ToDtoProjection());
+
+            return await PaginationHelper.CreateAsync(messageQuery, messageParams.PageNumber, messageParams.PageSize);
         }
 
-        public Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId)
+        public async Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId)
         {
-            throw new NotImplementedException();
+            await appDbContext.Messages
+                .Where(x => x.RecipientId == currentMemberId && x.SenderId == recipientId && x.DateRead == null)
+                .ExecuteUpdateAsync(m => m.SetProperty(p => p.DateRead, DateTime.UtcNow));
+
+            return await appDbContext.Messages
+                .Where(x => (x.RecipientId == currentMemberId &&  x.SenderId == recipientId) || (x.SenderId == currentMemberId && x.RecipientId == recipientId))
+                .OrderBy(m => m.MessageSent)
+                .Select(MessageExtensions.ToDtoProjection())
+                .ToListAsync();
+
         }
 
         public async Task<bool> SaveAllAsync()

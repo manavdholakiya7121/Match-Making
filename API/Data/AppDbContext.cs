@@ -50,13 +50,22 @@ namespace API.Data
                 v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
             );
 
-            foreach(var entityType in modelBuilder.Model.GetEntityTypes())
+            var nullableDateTimeConverter = new ValueConverter<DateTime?, DateTime?>(
+                v => v.HasValue ? v.Value.ToUniversalTime() : null,
+                v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null
+            );
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 foreach(var property in entityType.GetProperties())
                 {
                     if(property.ClrType == typeof(DateTime))
                     {
                         property.SetValueConverter(dateTimeConverter);
+                    }
+                    else if (property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(nullableDateTimeConverter);
                     }
                 }
             }
