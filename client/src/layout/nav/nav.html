@@ -25,17 +25,24 @@
     <nav class="flex gap-3 my-2 uppercase text-lg text-white">
       @if (accountService.currentUser()) {
         <a
-          routerLink="/members"
-          [routerLinkActiveOptions]="{ exact: true }"
-          routerLinkActive="text-accent"
-          >Matches</a
-        >
-        <a
           routerLink="/lists"
           [routerLinkActiveOptions]="{ exact: true }"
           routerLinkActive="text-accent"
           >Lists</a
         >
+        <a
+          routerLink="/members"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="text-accent"
+          >Matches</a
+        >
+                
+        <a
+          routerLink="/admin" *appHasRole="['Admin', 'Moderator']"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="text-accent"
+          >Admin</a
+        > 
         <a
           routerLink="/messages"
           [routerLinkActiveOptions]="{ exact: true }"

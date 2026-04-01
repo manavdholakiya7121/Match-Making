@@ -29,6 +29,7 @@ export class AccountService {
   }
 
   setCurrentUser(user: User){
+      user.roles = this.getRolesFromToken(user);
       localStorage.setItem('user', JSON.stringify(user));
       this.currentUser.set(user);
       this.likesService.getLikeIds();
@@ -39,5 +40,12 @@ export class AccountService {
     localStorage.removeItem('filters');
     this.likesService.clearLikeIds();
     this.currentUser.set(null);
+  }
+
+  private getRolesFromToken(user: User) : string[] {
+    const payload = user.token.split('.')[1];
+    const decodedToken = atob(payload);
+    const tokenData = JSON.parse(decodedToken);
+    return Array.isArray(tokenData.role) ? tokenData.role : [tokenData.role];
   }
 }
