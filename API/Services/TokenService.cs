@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,12 @@ namespace API.Services
 {
     public class TokenService(IConfiguration config, UserManager<AppUser> userManager) : ITokenService
     {
+        public string GenerateRefreshToken()
+        {
+            var randomByte = RandomNumberGenerator.GetBytes(64);
+            return Convert.ToBase64String(randomByte);
+        }
+
         public async Task<string> GetToken(AppUser user)
         {
             var tokenKey =  config["TokenKey"] ?? throw new Exception("cannot get token key");
@@ -35,7 +42,7 @@ namespace API.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddMinutes(7),
                 SigningCredentials = creds
             };
 
