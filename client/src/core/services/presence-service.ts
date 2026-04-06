@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { ToastService } from './toast-service';
 import { User } from '../../types/user';
@@ -10,7 +10,8 @@ import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@micros
 export class PresenceService {
   private hubUrl = environment.hubUrl;
   private toast = inject(ToastService);
-  public hubConnection?: HubConnection;
+  hubConnection?: HubConnection;
+  onlineUsers = signal<string[]>([]);
 
   createHubConnection(user: User) {
     this.hubConnection = new HubConnectionBuilder()
