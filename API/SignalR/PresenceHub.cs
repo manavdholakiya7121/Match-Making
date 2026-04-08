@@ -10,7 +10,6 @@ namespace API.SignalR
         public override async Task OnConnectedAsync()
         {
             await presenceTracker.UserConnected(GetUserId(), Context.ConnectionId);
-
             await Clients.Others.SendAsync("UserOnline", GetUserId());
 
             var currentUsers = await presenceTracker.GetOnlineUsers();
