@@ -19,6 +19,7 @@ namespace API.SignalR
             var groupName = GetGroupName(GetUserId(), otherUser);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            await AddToGroup(groupName);
 
             var messages = await messageRepository.GetMessageThread(GetUserId(), otherUser);
 
@@ -27,7 +28,9 @@ namespace API.SignalR
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
+            await messageRepository.RemoveConnection(Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
+
         }
 
         public async Task SendMessage(CreateMessageDto createMessageDto)
@@ -45,6 +48,9 @@ namespace API.SignalR
                 Content = createMessageDto.Content
             };
 
+            var groupName = GetGroupName(sender.Id, recipient.Id);
+
+
             messageRepository.AddMessage(message);
 
             if (await messageRepository.SaveAllAsync())
@@ -52,6 +58,22 @@ namespace API.SignalR
                 var group = GetGroupName(sender.Id, recipient.Id);
                 await Clients.Group(group).SendAsync("NewMessage",message.ToDto());
             }
+        }
+
+        private async Task<bool> AddToGroup(string groupName)
+        {
+            var group = await messageRepository.GetMessageGroup(groupName);
+            var connection = new Connection(Context.ConnectionId, GetUserId());
+
+            if (group == null)
+            {
+                group = new Group(groupName);
+                messageRepository.AddGroup(group);
+            }
+
+            group.Connections.Add(connection);
+
+            return await messageRepository.SaveAllAsync();
         }
 
         private static string GetGroupName(string? caller, string? other) 
