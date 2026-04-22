@@ -15,7 +15,6 @@ export class MessageService {
   private http = inject(HttpClient);
   private hubUrl = environment.hubUrl;
   private accountService = inject(AccountService);
-  private toast = inject(ToastService);
   private hubConnection?: HubConnection;
   messageThread = signal<Message[]>([]);
 

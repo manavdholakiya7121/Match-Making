@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { ToastService } from './toast-service';
 import { User } from '../../types/user';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
+import { Message } from '../../types/message';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,7 @@ import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@micros
 export class PresenceService {
   private hubUrl = environment.hubUrl;
   hubConnection?: HubConnection;
+  private toast = inject(ToastService);
   onlineUsers = signal<string[]>([]);
 
   createHubConnection(user: User) {
@@ -32,6 +34,10 @@ export class PresenceService {
 
     this.hubConnection.on('GetOnlineUsers', userIds => {
       this.onlineUsers.set(userIds);
+    });
+
+    this.hubConnection.on('NewMessageReceived', (message: Message) => {
+      this.toast.info(message.senderDisplayName + ' has sent you a new message!', 10000, message.senderImageUrl, '/members/' + message.senderId + '/messages');
     });
 
   }

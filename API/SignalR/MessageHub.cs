@@ -50,13 +50,19 @@ namespace API.SignalR
 
             var groupName = GetGroupName(sender.Id, recipient.Id);
 
+            var group = await messageRepository.GetMessageGroup(groupName);
+
+            if(group != null && group.Connections.Any(x => x.UserId == message.RecipientId))
+            {
+                message.DateRead = DateTime.UtcNow;
+            }
+
 
             messageRepository.AddMessage(message);
 
             if (await messageRepository.SaveAllAsync())
-            {
-                var group = GetGroupName(sender.Id, recipient.Id);
-                await Clients.Group(group).SendAsync("NewMessage",message.ToDto());
+            {               
+                await Clients.Group(groupName).SendAsync("NewMessage",message.ToDto());
             }
         }
 
