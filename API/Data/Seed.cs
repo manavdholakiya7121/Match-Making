@@ -22,7 +22,7 @@ namespace API.Data
                 Console.WriteLine("No members found in the seed data.");
                 return;
             }
-          
+
             foreach (var member in members)
             {
                 var user = new AppUser
@@ -54,7 +54,7 @@ namespace API.Data
                 });
 
                 var result = await userManager.CreateAsync(user, "Pa$$w0rd");
-                if(!result.Succeeded)
+                if (!result.Succeeded)
                 {
                     Console.WriteLine(result.Errors.First().Description);
                 }
@@ -71,4 +71,5 @@ namespace API.Data
             await userManager.CreateAsync(admin, "Pa$$w0rd");
             await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
         }
+    }
 }
