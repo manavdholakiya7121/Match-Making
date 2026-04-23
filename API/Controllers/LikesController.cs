@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class LikesController(ILikeRepository likeReository) : BaseApiController
+    public class LikesController(IUnitOFWork uow) : BaseApiController
     {
         [HttpPost("{targetMemberId}")]
         public async Task<ActionResult> ToggleLike(string targetMemberId)
@@ -19,7 +19,7 @@ namespace API.Controllers
                 return BadRequest("You cannot like yourself.");
             }
 
-            var existingLike = await likeReository.GetMemberLike(sourceMemberId, targetMemberId);
+            var existingLike = await uow.LikesRepository.GetMemberLike(sourceMemberId, targetMemberId);
 
             if (existingLike == null)
             {
@@ -28,14 +28,14 @@ namespace API.Controllers
                     SourceMemberId = sourceMemberId,
                     TargetMemberId = targetMemberId
                 };
-                likeReository.AddLike(newLike);
+                uow.LikesRepository.AddLike(newLike);
             }
             else
             {
-                likeReository.DeleteLike(existingLike);
+                uow.LikesRepository.DeleteLike(existingLike);
             }
 
-            if (await likeReository.SaveAllChanges())
+            if (await uow.Complete())
             {
                 return Ok();
             }
@@ -46,7 +46,7 @@ namespace API.Controllers
         [HttpGet("list")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetCurrentMemberLikeIds()
         {
-            return Ok(await likeReository.GetCurrentMemberLikesIds(User.GetMemberId()));
+            return Ok(await uow.LikesRepository.GetCurrentMemberLikesIds(User.GetMemberId()));
         }
 
         [HttpGet]
@@ -54,7 +54,7 @@ namespace API.Controllers
         [FromQuery] LikesParams likesParams)
         {
             likesParams.MemberId = User.GetMemberId();
-            var members = await likeReository.GetMemberLikes(likesParams);
+            var members = await uow.LikesRepository.GetMemberLikes(likesParams);
 
             return Ok(members);
         }
