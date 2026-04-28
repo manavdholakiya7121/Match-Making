@@ -73,7 +73,7 @@ namespace API.Controllers
             {
                 Url = result.SecureUrl.AbsoluteUri,
                 publicId = result.PublicId,
-                MemberId = member.Id
+                MemberId = User.GetMemberId()
             };
 
             if(member.ImageUrl == null)
