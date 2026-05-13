@@ -1,16 +1,16 @@
 <div class="flex items-center w-full gap-3 py-3">
-    <span>Items per page:</span>
-    <select class="select w-24" (change)="onPageChange(undefined, $event.target)">
+    <span class="text-sm text-base-content/60">Items per page:</span>
+    <select class="select select-sm rounded-xl bg-base-200/50 border-base-content/10 w-20" (change)="onPageChange(undefined, $event.target)">
         @for(size of pageSizeOptions(); track $index){
             <option [value]="size" [selected]="size === pageSize()">{{size}}</option>
         }
     </select>
-    <div class="text-sm">
+    <div class="text-sm text-base-content/60">
         {{(pageNumber() - 1) * pageSize() + 1}} - {{lastItemIndex()}} of {{totalCount()}}
     </div>
 
-    <div class="flex items-center gap-3">
-        <button class="btn btn-circle btn-ghost" [disabled]="pageNumber() === 1" (click)="onPageChange(pageNumber() - 1)">&larr;</button>
-        <button class="btn btn-circle btn-ghost" [disabled]="pageNumber() >= totalPages()" (click)="onPageChange(pageNumber() + 1)">&rarr;</button>
+    <div class="flex items-center gap-1">
+        <button class="btn btn-circle btn-ghost btn-sm" [disabled]="pageNumber() === 1" (click)="onPageChange(pageNumber() - 1)">&larr;</button>
+        <button class="btn btn-circle btn-ghost btn-sm" [disabled]="pageNumber() >= totalPages()" (click)="onPageChange(pageNumber() + 1)">&rarr;</button>
     </div>
 </div>

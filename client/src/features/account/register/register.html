@@ -1,8 +1,16 @@
-<div class="card bg-base-100 w-1/2 mx-auto flex flex-col p-6 rounded-lg shadow-lg">
-    <div class="card-title justify-center text-3xl text-primary">Sign up</div>
-    <div class="card-body w-full">
+<div class="card glass-card w-full max-w-lg mx-auto flex flex-col p-8 rounded-3xl shadow-2xl animate-fade-in-up">
+    <div class="flex flex-col items-center mb-4">
+        <div class="text-primary mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-10">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+            </svg>
+        </div>
+        <div class="text-3xl font-bold text-base-content">Create Account</div>
+        <p class="text-base-content/50 text-sm mt-1">Join Make Match today</p>
+    </div>
+    <div class="card-body w-full px-0 pt-4">
 
-        <ul class="steps">
+        <ul class="steps w-full mb-4">
             <li class="step step-primary">Credentials</li>
             <li class="step" [class.step-primary]="currentStep() === 2">Profile</li>
         </ul>
@@ -15,12 +23,12 @@
             <app-text-input label="Confirm Password" formControlName="confirmPassword" 
                 type="password" />
 
-            <div class="flex items-center justify-end gap-3">
-                <button (click)="cancel()" type="button" class="btn">Cancel</button>
+            <div class="flex items-center justify-end gap-3 mt-2">
+                <button (click)="cancel()" type="button" class="btn btn-ghost rounded-full px-6">Cancel</button>
                 <button
                     [disabled]="!credentialsForm.valid" 
                     (click)="nextStep()"
-                    class="btn btn-primary" type="button">Next</button>
+                    class="btn btn-primary rounded-full px-8 shadow-md shadow-primary/20" type="button">Next</button>
             </div>
         </form>
         }
@@ -28,17 +36,17 @@
         @if (currentStep() === 2) {
             <form [formGroup]="profileForm" class="flex flex-col w-full gap-4 steps">
                 
-                <div class="flex items-center gap-4">
-                    <div class="font-semibold">Gender: </div>
-                    <label class="flex gap-3 items-center">
-                        <span>Male</span>
+                <div class="flex items-center gap-4 bg-base-200/50 p-4 rounded-2xl">
+                    <div class="font-semibold text-sm text-base-content/70">Gender: </div>
+                    <label class="flex gap-2 items-center cursor-pointer">
+                        <span class="text-sm">Male</span>
                         <input type="radio" formControlName="gender" value="male" 
-                            class="radio radio-primary">
+                            class="radio radio-primary radio-sm">
                     </label>
-                    <label class="flex gap-3 items-center">
-                        <span>Female</span>
+                    <label class="flex gap-2 items-center cursor-pointer">
+                        <span class="text-sm">Female</span>
                         <input type="radio" formControlName="gender" value="female" 
-                            class="radio radio-primary">
+                            class="radio radio-primary radio-sm">
                     </label>
                 </div>
 
@@ -48,12 +56,12 @@
                 <app-text-input label="City" formControlName="city" />
                 <app-text-input label="Country" formControlName="country" />
 
-                <div class="flex items-center justify-end gap-3">
-                <button (click)="prevStep()" type="button" class="btn">Back</button>
+                <div class="flex items-center justify-end gap-3 mt-2">
+                <button (click)="prevStep()" type="button" class="btn btn-ghost rounded-full px-6">Back</button>
                 <button
                     [disabled]="!profileForm.valid" 
                     (click)="register()"
-                    class="btn btn-primary" type="button">Register</button>
+                    class="btn btn-primary rounded-full px-8 shadow-md shadow-primary/20" type="button">Register</button>
             </div>
             </form>
         }
@@ -61,8 +69,8 @@
     </div>
 
     @if (validationErrors().length > 0) {
-        <div class="mt-5 flex bg-gray-200 rounded-2xl w-1/2 p-3 mx-auto">
-            <ul class="flex flex-col text-error space-y-1">
+        <div class="mt-4 flex bg-error/10 rounded-2xl w-full p-4">
+            <ul class="flex flex-col text-error text-sm space-y-1">
                 @for (error of validationErrors(); track $index) {
                     <li>{{error}}</li>
                 }

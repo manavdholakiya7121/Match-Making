@@ -1,5 +1,5 @@
 <div class="flex flex-col w-full h-[72vh]">
-    <div class="flex flex-col flex-grow overflow-auto">
+    <div class="flex flex-col flex-grow overflow-y-auto min-h-0 px-2 py-4 gap-1 scrollbar-hidden">
         @for (message of messageService.messageThread(); track message.id) {
         <div 
             class="chat"
@@ -9,30 +9,35 @@
                 class="chat-image avatar"
                 [class.avatar-online]="presenceService.onlineUsers().includes(message.senderId || message.recipientId)"
             >
-                <div class="w-10 rounded-full">
+                <div class="w-10 rounded-full ring-2 ring-base-content/10">
                     <img alt="Image of user"
                         [src]="message.senderImageUrl || '/user.png'" />
                 </div>
             </div>
-            <div class="chat-header">
+            <div class="chat-header font-medium">
                 {{message.senderDisplayName}}
-                <time class="text-xs opacity-50">{{message.messageSent | date:'short'}}</time>
+                <time class="text-xs opacity-50 ml-1">{{message.messageSent | date:'short'}}</time>
             </div>
-            <div class="chat-bubble">{{message.content}}</div>
+            <div class="chat-bubble shadow-sm" [class.chat-bubble-primary]="message.currentUserSender">{{message.content}}</div>
             @if (message.currentUserSender && message.dateRead) {
-                <div class="chat-footer opacity-50">Seen {{message.dateRead | timeAgo}}</div>
+                <div class="chat-footer opacity-50 text-xs">Seen {{message.dateRead | timeAgo}}</div>
             } @else if (message.currentUserSender && !message.dateRead) {
-                <div class="chat-footer opacity-50">Not read</div>
+                <div class="chat-footer opacity-50 text-xs">Not read</div>
             } @else {
-                <div class="chat-footer opacity-50">Delivered</div>
+                <div class="chat-footer opacity-50 text-xs">Delivered</div>
             }
         </div>
         }
         <div #messageEndRef></div>
     </div>
-    <div class="flex join w-full">
+    <div class="flex w-full gap-2 pt-3 border-t border-base-content/5 shrink-0">
         <input [(ngModel)]="messageContent" type="text" placeholder="Type your message here..."
-            class="input w-full" />
-        <button (click)="sendMessage()" type="submit" class="btn btn-primary join-item">Send</button>
+            class="input input-bordered w-full rounded-full bg-base-200/50 border-base-content/10 focus:border-primary" />
+        <button (click)="sendMessage()" type="submit" class="btn btn-primary rounded-full px-6 shadow-md shadow-primary/20">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+            </svg>
+            Send
+        </button>
     </div>
 </div>
